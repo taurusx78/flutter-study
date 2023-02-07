@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_practice/layout/default_layout.dart';
+import 'package:riverpod_practice/screen/auto_dispose_modifier_screen.dart';
+import 'package:riverpod_practice/screen/family_modifier_screen.dart';
 import 'package:riverpod_practice/screen/state_notifier_provider_screen.dart';
 import 'package:riverpod_practice/screen/state_provider_screen.dart';
 import 'package:riverpod_practice/screen/stream_provider_screen.dart';
@@ -51,6 +53,26 @@ class HomeScreen extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => const StreamProviderScreen(),
+                ),
+              );
+            },
+          ),
+          ElevatedButton(
+            child: const Text('Family Modifier'),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const FamilyModifierScreen(),
+                ),
+              );
+            },
+          ),
+          ElevatedButton(
+            child: const Text('Auto Dispose Modifier'),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const AutoDisposeModifierScreen(),
                 ),
               );
             },
