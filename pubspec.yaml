@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+  dio: ^4.0.6 # HTTP 통신 라이브러리
+  flutter_secure_storage: ^7.0.1 # 보안이 적용된 저장소 라이브러리
 
 dev_dependencies:
   flutter_test:

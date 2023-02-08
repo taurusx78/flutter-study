@@ -1,13 +1,23 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/component/custom_text_form_field.dart';
 import 'package:flutter_delivery_app/common/const/colors.dart';
+import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
+import 'package:flutter_delivery_app/common/view/root_tab.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
+
+  String username = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
+    final dio = Dio();
+
     return DefaultLayout(
       child: SingleChildScrollView(
         // 화면을 스크롤하면 키패드 사라지도록 설정
@@ -30,30 +40,64 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 CustomTextFormField(
                   hintText: '이메일을 입력해주세요.',
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    username = value;
+                  },
                 ),
                 const SizedBox(height: 16.0),
                 CustomTextFormField(
                   hintText: '비밀번호를 입력해주세요.',
                   obscureText: true,
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    password = value;
+                  },
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {},
+                  child: const Text('로그인'),
+                  onPressed: () async {
+                    // 아이디:비밀번호
+                    final rawString = '$username:$password';
+                    // 문자열을 Base64로 변환
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+                    // Basic 토큰 생성
+                    String token = stringToBase64.encode(rawString);
+
+                    // 로그인 요청
+                    final resp = await dio.post(
+                      'http://$ip/auth/login',
+                      options: Options(
+                        headers: {
+                          'authorization': 'Basic $token',
+                        },
+                      ),
+                    );
+
+                    // resp.data: 응답 결과의 Body (Map 타입의 Json 데이터)
+                    final refreshToken = resp.data['refreshToken'];
+                    final accessToken = resp.data['accessToken'];
+
+                    // Secure Storage에 토큰 저장
+                    storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+                    storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
+                    // RootTab 페이지로 이동
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const RootTab(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
-                  child: const Text(
-                    '로그인',
-                  ),
                 ),
                 TextButton(
+                  child: const Text('회원가입'),
                   onPressed: () {},
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black,
                   ),
-                  child: const Text('회원가입'),
                 ),
               ],
             ),
