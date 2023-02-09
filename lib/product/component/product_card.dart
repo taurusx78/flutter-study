@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/colors.dart';
-import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_detail_model.dart';
 
 class ProductCard extends StatelessWidget {
@@ -23,7 +22,7 @@ class ProductCard extends StatelessWidget {
     return ProductCard(
       id: model.id,
       name: model.name,
-      imgUrl: 'http://$ip${model.imgUrl}',
+      imgUrl: model.imgUrl,
       detail: model.detail,
       price: model.price,
     );

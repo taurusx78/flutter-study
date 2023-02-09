@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
+import 'package:flutter_delivery_app/common/dio/dio_interceptor.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
 import 'package:flutter_delivery_app/product/component/product_card.dart';
 import 'package:flutter_delivery_app/restaurant/component/restaurant_card.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_detail_model.dart';
+import 'package:flutter_delivery_app/restaurant/repository/restaurant_repository.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id; // 매장 id
@@ -17,29 +19,22 @@ class RestaurantDetailScreen extends StatelessWidget {
   }) : super(key: key);
 
   // 매장 상세데이터 요청
-  Future<Map<String, dynamic>> getRestaurantDetail() async {
+  Future<RestaurantDetailModel> getRestaurantDetail() async {
     final dio = Dio();
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-
-    final resp = await dio.get(
-      'http://$ip/restaurant/$id',
-      options: Options(
-        headers: {
-          'authorization': 'Bearer $accessToken',
-        },
-      ),
-    );
-
-    return resp.data;
+    // Dio 인터셉터 추가
+    dio.interceptors.add(DioInterceptor(storage: storage));
+    final repository =
+        RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant');
+    return await repository.getRestaurantDetail(id: id);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: name,
-      child: FutureBuilder<Map<String, dynamic>>(
+      child: FutureBuilder<RestaurantDetailModel>(
         future: getRestaurantDetail(),
-        builder: (_, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
           // 아직 받은 데이터가 없는 경우
           if (!snapshot.hasData) {
             return const Center(
@@ -47,13 +42,11 @@ class RestaurantDetailScreen extends StatelessWidget {
             );
           }
 
-          final item = RestaurantDetailModel.fromJson(json: snapshot.data!);
-
           return CustomScrollView(
             slivers: [
-              renderTop(model: item),
+              renderTop(model: snapshot.data!),
               renderLabel(),
-              renderProducts(products: item.products),
+              renderProducts(products: snapshot.data!.products),
             ],
           );
         },
