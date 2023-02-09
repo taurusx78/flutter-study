@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/restaurant/component/restaurant_card.dart';
+import 'package:flutter_delivery_app/restaurant/model/restaurant_model.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({Key? key}) : super(key: key);
@@ -39,20 +40,12 @@ class RestaurantScreen extends StatelessWidget {
             return ListView.separated(
               itemCount: snapshot.data!.length,
               itemBuilder: (_, index) {
-                final item = snapshot.data![index];
+                // Json 데이터
+                final Map<String, dynamic> item = snapshot.data![index];
+                // RestaurantModel 타입의 데이터로 변경
+                final pItem = RestaurantModel.fromJson(json: item);
 
-                return RestaurantCard(
-                  image: Image.network(
-                    'http://$ip${item['thumbUrl']}',
-                    fit: BoxFit.cover,
-                  ),
-                  name: item['name'],
-                  tags: List<String>.from(item['tags']),
-                  ratings: item['ratings'],
-                  ratingsCount: item['ratingsCount'],
-                  deliveryTime: item['deliveryTime'],
-                  deliveryFee: item['deliveryFee'],
-                );
+                return RestaurantCard.fromModel(model: pItem);
               },
               separatorBuilder: (_, index) => const SizedBox(height: 16.0),
             );
