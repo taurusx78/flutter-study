@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/colors.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
+import 'package:flutter_delivery_app/restaurant/model/restaurant_detail_model.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_model.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -12,6 +13,9 @@ class RestaurantCard extends StatelessWidget {
   final int deliveryTime; // 배송 시간
   final int deliveryFee; // 배송비
 
+  final bool isDetail; // 상세카드 여부
+  final String? detail; // 상세내용
+
   const RestaurantCard({
     required this.image,
     required this.name,
@@ -20,11 +24,16 @@ class RestaurantCard extends StatelessWidget {
     required this.ratingsCount,
     required this.deliveryTime,
     required this.deliveryFee,
+    this.isDetail = false,
+    this.detail,
     Key? key,
   }) : super(key: key);
 
   // RestaurantModel 데이터를 받아 RestaurantCard 위젯 생성
-  factory RestaurantCard.fromModel({required RestaurantModel model}) {
+  factory RestaurantCard.fromModel({
+    required RestaurantModel model,
+    bool isDetail = false,
+  }) {
     return RestaurantCard(
       image: Image.network(
         'http://$ip${model.thumbUrl}',
@@ -36,6 +45,8 @@ class RestaurantCard extends StatelessWidget {
       ratingsCount: model.ratingsCount,
       deliveryTime: model.deliveryTime,
       deliveryFee: model.deliveryFee,
+      isDetail: isDetail,
+      detail: model is RestaurantDetailModel ? model.detail : null,
     );
   }
 
@@ -45,58 +56,66 @@ class RestaurantCard extends StatelessWidget {
       children: [
         // 매장사진
         ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(!isDetail ? 8.0 : 0),
           child: image,
         ),
         const SizedBox(height: 16.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 매장명
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w500,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: !isDetail ? 0 : 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 매장명
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            // 태그
-            Text(
-              tags.join(' · '),
-              style: const TextStyle(
-                color: BODY_TEXT_COLOR,
+              const SizedBox(height: 8.0),
+              // 태그
+              Text(
+                tags.join(' · '),
+                style: const TextStyle(
+                  color: BODY_TEXT_COLOR,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Row(
-              children: [
-                // 평균 평점
-                _IconText(
-                  icon: Icons.star,
-                  label: ratings.toString(),
+              const SizedBox(height: 8.0),
+              Row(
+                children: [
+                  // 평균 평점
+                  _IconText(
+                    icon: Icons.star,
+                    label: ratings.toString(),
+                  ),
+                  renderDot(),
+                  // 평점 개수
+                  _IconText(
+                    icon: Icons.receipt,
+                    label: ratingsCount.toString(),
+                  ),
+                  renderDot(),
+                  // 배송 시간
+                  _IconText(
+                    icon: Icons.timelapse_outlined,
+                    label: '$deliveryTime 분',
+                  ),
+                  renderDot(),
+                  // 배송비
+                  _IconText(
+                    icon: Icons.monetization_on,
+                    label: deliveryFee != 0 ? deliveryFee.toString() : '무료',
+                  ),
+                ],
+              ),
+              if (isDetail && detail != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(detail!),
                 ),
-                renderDot(),
-                // 평점 개수
-                _IconText(
-                  icon: Icons.receipt,
-                  label: ratingsCount.toString(),
-                ),
-                renderDot(),
-                // 배송 시간
-                _IconText(
-                  icon: Icons.timelapse_outlined,
-                  label: '$deliveryTime 분',
-                ),
-                renderDot(),
-                // 배송비
-                _IconText(
-                  icon: Icons.monetization_on,
-                  label: deliveryFee != 0 ? deliveryFee.toString() : '무료',
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

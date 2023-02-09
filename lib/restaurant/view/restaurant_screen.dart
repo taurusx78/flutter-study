@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/restaurant/component/restaurant_card.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_model.dart';
+import 'package:flutter_delivery_app/restaurant/view/restaurant_detail_screen.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class RestaurantScreen extends StatelessWidget {
         child: FutureBuilder<List>(
           future: paginateRestaurant(),
           builder: (_, AsyncSnapshot<List> snapshot) {
-            // 아직 데이터를 받지않은 경우
+            // 아직 받은 데이터가 없는 경우
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -45,7 +46,19 @@ class RestaurantScreen extends StatelessWidget {
                 // RestaurantModel 타입의 데이터로 변경
                 final pItem = RestaurantModel.fromJson(json: item);
 
-                return RestaurantCard.fromModel(model: pItem);
+                return GestureDetector(
+                  child: RestaurantCard.fromModel(model: pItem),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RestaurantDetailScreen(
+                          id: pItem.id,
+                          name: pItem.name,
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
               separatorBuilder: (_, index) => const SizedBox(height: 16.0),
             );
