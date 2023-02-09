@@ -84,7 +84,7 @@ class LoginScreen extends StatelessWidget {
                     // RootTab 페이지로 이동
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => const RootTab(),
+                        builder: (_) => RootTab(),
                       ),
                     );
                   },

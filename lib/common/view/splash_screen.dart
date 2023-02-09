@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/const/colors.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
@@ -22,18 +23,30 @@ class _SplashScreenState extends State<SplashScreen> {
   // 토큰 유효성 검사
   void checkToken() async {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
-    if (refreshToken == null || accessToken == null) {
-      // 로그인하지 않은 경우
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-        (route) => false,
+    final dio = Dio();
+
+    // Access 토큰 재발급 요청
+    try {
+      final resp = await dio.post(
+        'http://$ip/auth/token',
+        options: Options(headers: {
+          'authorization': 'Bearer $refreshToken',
+        }),
       );
-    } else {
-      // 이미 로그인한 경우
+
+      // Access 토큰 갱신
+      final accessToken = resp.data['accessToken'];
+      await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
+        (route) => false,
+      );
+    } catch (e) {
+      // Refresh 토큰 만료, Access 토큰 재발급 실패
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => LoginScreen()),
         (route) => false,
       );
     }
