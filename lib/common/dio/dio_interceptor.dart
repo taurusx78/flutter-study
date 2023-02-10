@@ -1,6 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
+import 'package:flutter_delivery_app/common/secure_storage/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+  final storage = ref.watch(secureStorageProvider);
+  // Dio 인터셉터 적용
+  dio.interceptors.add(DioInterceptor(storage: storage));
+  return dio;
+});
 
 // 모든 Dio 요청에 대해 해당 인터셉터 실행됨
 

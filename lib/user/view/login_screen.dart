@@ -6,16 +6,18 @@ import 'package:flutter_delivery_app/common/component/custom_text_form_field.dar
 import 'package:flutter_delivery_app/common/const/colors.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
+import 'package:flutter_delivery_app/common/secure_storage/secure_storage.dart';
 import 'package:flutter_delivery_app/common/view/root_tab.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   String username = '';
   String password = '';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dio = Dio();
 
     return DefaultLayout(
@@ -78,6 +80,7 @@ class LoginScreen extends StatelessWidget {
                     final accessToken = resp.data['accessToken'];
 
                     // Secure Storage에 토큰 저장
+                    final storage = ref.read(secureStorageProvider);
                     storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
                     storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
 
