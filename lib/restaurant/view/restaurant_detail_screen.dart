@@ -137,7 +137,7 @@ class _RestaurantDetailScreenState
   }
 
   SliverPadding renderProducts({
-    required List<ProductModel> products,
+    required List<RestaurantProductModel> products,
   }) {
     return SliverPadding(
       padding: const EdgeInsets.all(16.0),
@@ -148,7 +148,7 @@ class _RestaurantDetailScreenState
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
-              child: ProductCard.fromModel(model: product),
+              child: ProductCard.fromRestaurantProductModel(model: product),
             );
           },
           childCount: products.length,

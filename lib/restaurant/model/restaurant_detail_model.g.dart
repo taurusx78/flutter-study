@@ -20,7 +20,8 @@ RestaurantDetailModel _$RestaurantDetailModelFromJson(
       deliveryFee: json['deliveryFee'],
       detail: json['detail'] as String,
       products: (json['products'] as List<dynamic>)
-          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+          .map(
+              (e) => RestaurantProductModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -46,7 +47,9 @@ const _$RestaurantPriceRangeEnumMap = {
   RestaurantPriceRange.cheap: 'cheap',
 };
 
-ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
+RestaurantProductModel _$RestaurantProductModelFromJson(
+        Map<String, dynamic> json) =>
+    RestaurantProductModel(
       id: json['id'] as String,
       name: json['name'] as String,
       imgUrl: DataUtils.pathToUrl(json['imgUrl'] as String),
@@ -54,7 +57,8 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       price: json['price'] as int,
     );
 
-Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
+Map<String, dynamic> _$RestaurantProductModelToJson(
+        RestaurantProductModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

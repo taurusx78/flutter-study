@@ -105,8 +105,6 @@ class PaginationProvider<T extends IModelWithId,
         state = resp;
       }
     } catch (e) {
-      print('에러 발생');
-      print(e);
       // 에러가 난 경우 (3)
       // CursorPaginationError 상태로 변경
       state = CursorPaginationError(message: '예기치 못한 오류가 발생했습니다.\n다시 시도해 주세요.');
