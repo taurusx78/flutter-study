@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/common/secure_storage/secure_storage.dart';
+import 'package:flutter_delivery_app/user/provider/auth_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +9,7 @@ final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   final storage = ref.watch(secureStorageProvider);
   // Dio 인터셉터 적용
-  dio.interceptors.add(DioInterceptor(storage: storage));
+  dio.interceptors.add(DioInterceptor(storage: storage, ref: ref));
   return dio;
 });
 
@@ -16,8 +17,12 @@ final dioProvider = Provider<Dio>((ref) {
 
 class DioInterceptor extends Interceptor {
   final FlutterSecureStorage storage;
+  final Ref ref;
 
-  DioInterceptor({required this.storage});
+  DioInterceptor({
+    required this.storage,
+    required this.ref,
+  });
 
   // 1. 요청을 보낼 때
   // Access 토큰 Header에 담아 요청
@@ -99,6 +104,9 @@ class DioInterceptor extends Interceptor {
         final response = await dio.fetch(options);
         return handler.resolve(response); // 에러 없이 종료
       } on DioError catch (e) {
+        // 요청 처리 중 에러가 나거나, Refresh 토큰이 만료된 경우
+        // 로그아웃 처리
+        ref.read(authProvider.notifier).logout();
         return handler.reject(e); // 에러 던짐
       }
     }

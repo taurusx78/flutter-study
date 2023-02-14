@@ -1,16 +1,14 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/component/custom_text_form_field.dart';
 import 'package:flutter_delivery_app/common/const/colors.dart';
-import 'package:flutter_delivery_app/common/const/data.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
-import 'package:flutter_delivery_app/common/secure_storage/secure_storage.dart';
-import 'package:flutter_delivery_app/common/view/root_tab.dart';
+import 'package:flutter_delivery_app/user/model/user_model.dart';
+import 'package:flutter_delivery_app/user/provider/user_me_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerWidget {
+  static String get routeName => 'login';
+
   LoginScreen({Key? key}) : super(key: key);
 
   String username = '';
@@ -18,7 +16,7 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dio = Dio();
+    final UserModelBase? state = ref.watch(userMeProvider);
 
     return DefaultLayout(
       child: SingleChildScrollView(
@@ -55,46 +53,32 @@ class LoginScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
-                  child: const Text('로그인'),
-                  onPressed: () async {
-                    // 아이디:비밀번호
-                    final rawString = '$username:$password';
-                    // 문자열을 Base64로 변환
-                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-                    // Basic 토큰 생성
-                    String token = stringToBase64.encode(rawString);
-
-                    // 로그인 요청
-                    final resp = await dio.post(
-                      'http://$ip/auth/login',
-                      options: Options(
-                        headers: {
-                          'authorization': 'Basic $token',
+                state is! UserModelLoading
+                    ? ElevatedButton(
+                        child: const Text('로그인'),
+                        onPressed: () async {
+                          ref.read(userMeProvider.notifier).login(
+                                username: username,
+                                password: password,
+                              );
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: PRIMARY_COLOR,
+                        ),
+                      )
+                    : ElevatedButton(
+                        child: const SizedBox(
+                          width: 18.0,
+                          height: 18.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.0,
+                          ),
+                        ),
+                        onPressed: null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: PRIMARY_COLOR,
+                        ),
                       ),
-                    );
-
-                    // resp.data: 응답 결과의 Body (Map 타입의 Json 데이터)
-                    final refreshToken = resp.data['refreshToken'];
-                    final accessToken = resp.data['accessToken'];
-
-                    // Secure Storage에 토큰 저장
-                    final storage = ref.read(secureStorageProvider);
-                    storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-                    storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-                    // RootTab 페이지로 이동
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RootTab(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: PRIMARY_COLOR,
-                  ),
-                ),
                 TextButton(
                   child: const Text('회원가입'),
                   onPressed: () {},

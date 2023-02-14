@@ -14,12 +14,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletons/skeletons.dart';
 
 class RestaurantDetailScreen extends ConsumerStatefulWidget {
+  static String get routeName => 'restaurantDetail';
+
   final String id; // 매장 id
-  final String name; // 매장명
 
   const RestaurantDetailScreen({
     required this.id,
-    required this.name,
     Key? key,
   }) : super(key: key);
 
@@ -65,7 +65,7 @@ class _RestaurantDetailScreenState
     }
 
     return DefaultLayout(
-      title: widget.name,
+      title: state.name,
       child: CustomScrollView(
         controller: controller,
         slivers: [

@@ -3,9 +3,12 @@ import 'package:flutter_delivery_app/common/const/colors.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
 import 'package:flutter_delivery_app/product/view/product_screen.dart';
 import 'package:flutter_delivery_app/restaurant/view/restaurant_screen.dart';
+import 'package:flutter_delivery_app/user/view/profile_screen.dart';
 
 class RootTab extends StatefulWidget {
-  RootTab({Key? key}) : super(key: key);
+  static String get routeName => 'home';
+
+  const RootTab({Key? key}) : super(key: key);
 
   @override
   State<RootTab> createState() => _RootTabState();
@@ -34,7 +37,7 @@ class _RootTabState extends State<RootTab> with TickerProviderStateMixin {
           const RestaurantScreen(),
           ProductScreen(),
           Center(child: Text('주문')),
-          Center(child: Text('프로필')),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
