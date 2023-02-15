@@ -18,4 +18,9 @@ class DataUtils {
     String encoded = stringToBase64.encode(plain);
     return encoded;
   }
+
+  // 문자열을 DateTime 타입으로 변환하는 함수
+  static DateTime stringToDateTime(String value) {
+    return DateTime.parse(value);
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_delivery_app/common/view/root_tab.dart';
 import 'package:flutter_delivery_app/common/view/splash_screen.dart';
+import 'package:flutter_delivery_app/restaurant/view/basket_screen.dart';
+import 'package:flutter_delivery_app/restaurant/view/order_done_screen.dart';
 import 'package:flutter_delivery_app/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter_delivery_app/user/model/user_model.dart';
 import 'package:flutter_delivery_app/user/provider/user_me_provider.dart';
@@ -55,7 +57,7 @@ class AuthNotifier extends ChangeNotifier {
   List<GoRoute> get routes => [
         GoRoute(
           path: '/',
-          // name: RootTab.routeName,
+          name: RootTab.routeName,
           builder: (_, __) => const RootTab(),
           routes: [
             GoRoute(
@@ -69,13 +71,23 @@ class AuthNotifier extends ChangeNotifier {
         ),
         GoRoute(
           path: '/splash',
-          // name: SplashScreen.routeName,
+          name: SplashScreen.routeName,
           builder: (_, __) => const SplashScreen(),
         ),
         GoRoute(
           path: '/login',
-          // name: LoginScreen.routeName,
+          name: LoginScreen.routeName,
           builder: (_, __) => LoginScreen(),
+        ),
+        GoRoute(
+          path: '/basket',
+          name: BasketScreen.routeName,
+          builder: (_, state) => const BasketScreen(),
+        ),
+        GoRoute(
+          path: '/order_done',
+          name: OrderDoneScreen.routeName,
+          builder: (_, state) => const OrderDoneScreen(),
         ),
       ];
 

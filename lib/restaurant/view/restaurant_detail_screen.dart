@@ -13,8 +13,10 @@ import 'package:flutter_delivery_app/restaurant/component/restaurant_card.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_detail_model.dart';
 import 'package:flutter_delivery_app/restaurant/model/restaurant_model.dart';
 import 'package:flutter_delivery_app/restaurant/provider/restaurant_provider.dart';
+import 'package:flutter_delivery_app/restaurant/view/basket_screen.dart';
 import 'package:flutter_delivery_app/user/provider/basket_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletons/skeletons.dart';
 
 class RestaurantDetailScreen extends ConsumerStatefulWidget {
@@ -106,7 +108,10 @@ class _RestaurantDetailScreenState
           ),
           child: const Icon(Icons.shopping_basket_outlined),
         ),
-        onPressed: () {},
+        onPressed: () {
+          // 장바구니 페이지로 이동
+          context.pushNamed(BasketScreen.routeName);
+        },
       ),
     );
   }
