@@ -3,7 +3,7 @@ import 'package:flutter_delivery_app/common/const/colors.dart';
 import 'package:flutter_delivery_app/common/layout/default_layout.dart';
 import 'package:flutter_delivery_app/order/provider/order_provider.dart';
 import 'package:flutter_delivery_app/product/component/product_card.dart';
-import 'package:flutter_delivery_app/restaurant/view/order_done_screen.dart';
+import 'package:flutter_delivery_app/order/view/order_done_screen.dart';
 import 'package:flutter_delivery_app/user/model/basket_item_model.dart';
 import 'package:flutter_delivery_app/user/provider/basket_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

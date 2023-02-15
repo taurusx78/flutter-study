@@ -89,43 +89,51 @@ class _PaginationListViewState<T extends IModelWithId>
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ListView.separated(
-        controller: controller,
-        itemCount: cp.data.length + 1,
-        itemBuilder: (_, index) {
-          if (index == cp.data.length) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                child: cp is CursorPaginationFetchingMore
-                    ? const CircularProgressIndicator()
-                    : const Text('마지막 데이터입니다.'),
-              ),
-            );
-          }
-
-          final pItem = cp.data[index];
-
-          // return GestureDetector(
-          //   child: RestaurantCard.fromModel(model: pItem),
-          //   onTap: () {
-          //     Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (_) => RestaurantDetailScreen(
-          //           id: pItem.id,
-          //           name: pItem.name,
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // );
-          return widget.itemBuilder(
-            context,
-            index,
-            pItem,
-          );
+      child: RefreshIndicator(
+        onRefresh: () async {
+          // 리스트 새로고침
+          ref.read(widget.provider.notifier).paginate(forceRefetch: true);
         },
-        separatorBuilder: (_, index) => const SizedBox(height: 16.0),
+        child: ListView.separated(
+          // 리스트가 화면 높이보다 짧아도 스크롤 되도록 설정
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: controller,
+          itemCount: cp.data.length + 1,
+          itemBuilder: (_, index) {
+            if (index == cp.data.length) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  child: cp is CursorPaginationFetchingMore
+                      ? const CircularProgressIndicator()
+                      : const Text('마지막 데이터입니다.'),
+                ),
+              );
+            }
+
+            final pItem = cp.data[index];
+
+            // return GestureDetector(
+            //   child: RestaurantCard.fromModel(model: pItem),
+            //   onTap: () {
+            //     Navigator.of(context).push(
+            //       MaterialPageRoute(
+            //         builder: (_) => RestaurantDetailScreen(
+            //           id: pItem.id,
+            //           name: pItem.name,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // );
+            return widget.itemBuilder(
+              context,
+              index,
+              pItem,
+            );
+          },
+          separatorBuilder: (_, index) => const SizedBox(height: 16.0),
+        ),
       ),
     );
   }
