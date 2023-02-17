@@ -20,7 +20,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
     // redirect
     redirect: authStateProvider._redirectLogic,
-    // refresh: AuthNotifier의 상태가 변경됐을 때 redirect를 재실행함
+    // refresh: AuthNotifier의 notifyListeners()가 호출됐을 때 redirect를 재실행함
     // -> 상태값 변경 감지가 필요하기 때문에, ChangeNotifier를 상속한 클래스를 받음
     refreshListenable: authStateProvider,
     routes: authStateProvider._routes,
@@ -36,7 +36,7 @@ class AuthNotifier extends ChangeNotifier {
     // userProvider의 상태값(UserModel? 타입) 변경 감지
     ref.listen<UserModel?>(userProvider, (previous, next) {
       if (previous != next) {
-        // AuthNotifier의 상태가 변경됐음을 외부에 알림 (Refresh 역할)
+        // 상태가 변경됐음을 외부에 알림 (Refresh 역할)
         notifyListeners();
       }
     });
