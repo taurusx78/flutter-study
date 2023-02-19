@@ -2,7 +2,7 @@ import 'package:flutter_delivery_app/user/provider/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final routerProvider = Provider<GoRouter>((ref) {
+final goRouterProvider = Provider<GoRouter>((ref) {
   // read - 딱 한번만 읽어옴. 이후 상태가 변경되어도 GoRouter 유지됨
   // watch - 상태가 변경되면 새로운 GoRouter 반환
   final provider = ref.read(authProvider);

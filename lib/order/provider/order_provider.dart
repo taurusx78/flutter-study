@@ -15,7 +15,7 @@ final orderProvider =
 });
 
 class OrderStateNotifier
-    extends PaginationProvider<OrderModel, OrderRepository> {
+    extends PaginationStateNotifier<OrderModel, OrderRepository> {
   final Ref ref;
 
   OrderStateNotifier({

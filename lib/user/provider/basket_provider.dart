@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_delivery_app/product/model/product_model.dart';
 import 'package:flutter_delivery_app/user/model/basket_item_model.dart';
 import 'package:flutter_delivery_app/user/model/patch_basket_body.dart';
@@ -13,10 +14,19 @@ final basketProvider =
 
 class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
   final UserMeRepository repository;
+  final debounce = Debouncer(
+    const Duration(seconds: 1),
+    initialValue: null,
+    checkEquality: false,
+  );
 
   BasketStateNotifier({
     required this.repository,
-  }) : super([]);
+  }) : super([]) {
+    debounce.values.listen((event) {
+      patchBasket();
+    });
+  }
 
   // 장바구니 API 요청
   Future<void> patchBasket() async {
@@ -65,7 +75,7 @@ class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
     }
 
     // *** 요청 및 응답받기 ***
-    await patchBasket();
+    debounce.setValue(null);
   }
 
   // 장바구니에서 상품 삭제
@@ -107,6 +117,6 @@ class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
     }
 
     // *** 요청 및 응답받기 ***
-    await patchBasket();
+    debounce.setValue(null);
   }
 }

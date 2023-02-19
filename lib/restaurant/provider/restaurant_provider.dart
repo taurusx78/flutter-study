@@ -31,7 +31,7 @@ final restaurantProvider =
 });
 
 class RestaurantStateNotifier
-    extends PaginationProvider<RestaurantModel, RestaurantRepository> {
+    extends PaginationStateNotifier<RestaurantModel, RestaurantRepository> {
   RestaurantStateNotifier({required repository})
       : super(repository: repository);
 

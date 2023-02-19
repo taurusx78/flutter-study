@@ -11,7 +11,7 @@ typedef PaginationWidgetBuilder<T extends IModelWithId> = Widget Function(
 
 class PaginationListView<T extends IModelWithId>
     extends ConsumerStatefulWidget {
-  final StateNotifierProvider<PaginationProvider, CursorPaginationBase>
+  final StateNotifierProvider<PaginationStateNotifier, CursorPaginationBase>
       provider;
   final PaginationWidgetBuilder<T> itemBuilder;
 

@@ -10,14 +10,14 @@ import 'package:flutter_delivery_app/user/view/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final authProvider = ChangeNotifierProvider<AuthNotifier>((ref) {
-  return AuthNotifier(ref: ref);
+final authProvider = ChangeNotifierProvider<AuthChangeNotifier>((ref) {
+  return AuthChangeNotifier(ref: ref);
 });
 
-class AuthNotifier extends ChangeNotifier {
+class AuthChangeNotifier extends ChangeNotifier {
   final Ref ref;
 
-  AuthNotifier({
+  AuthChangeNotifier({
     required this.ref,
   }) {
     // userMeProvider의 상태값(UserModelBase? 타입) 변경 감지
@@ -37,6 +37,7 @@ class AuthNotifier extends ChangeNotifier {
     print('현재 위치: ${state.location}');
     // 현재 사용자 상태
     final UserModelBase? user = ref.read(userMeProvider);
+    print('현재 사용자 상태: $user');
     // 현재 로그인 페이지에 있는지
     final loggingIn = state.location == '/login';
 

@@ -12,7 +12,7 @@ final ratingProvider = StateNotifierProvider.family<RatingStateNotifier,
 });
 
 class RatingStateNotifier
-    extends PaginationProvider<RatingModel, RatingRepository> {
+    extends PaginationStateNotifier<RatingModel, RatingRepository> {
   RatingStateNotifier({
     required repository,
   }) : super(repository: repository);
